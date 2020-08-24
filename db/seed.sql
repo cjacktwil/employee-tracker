@@ -1,5 +1,5 @@
 INSERT INTO departments (department_name) VALUES 
-("Administraton"), 
+("Administration"), 
 ("Marketing"), 
 ("IT"), 
 ("Sales");
@@ -7,12 +7,12 @@ INSERT INTO departments (department_name) VALUES
 INSERT INTO roles (title, salary, department_id) VALUES 
 ("Executive Director", 150000, 1), 
 ("Secretary", 60000, 1),
-("Director", 90000, 2),
-("Specialist", 45000, 2),
-("Director", 100000, 3),
+("Marketing Director", 90000, 2),
+("Marketing Specialist", 45000, 2),
+("Director of IT", 100000, 3),
 ("Engineer", 80000, 3),
-("Director", 90000, 4),
-("Associate", 50000, 4);
+("Sales Director", 90000, 4),
+("Sales Associate", 50000, 4);
 
 INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES 
 ("Bob", "Smith", 1, NULL),
