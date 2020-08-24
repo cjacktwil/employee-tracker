@@ -1,37 +1,130 @@
-const inquirer = require('inquirer');
+// const { departments } = require('company.db');
+const { connection } = require('../server');
 
-inquirer
-.prompt([
+const initialQuestion = [
      {
          type: 'list',
          name: 'initial_question',
          message: 'What would you like to do?',
          choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', "Update an employee's role"]
      }   
-    ])
-    .then(({ initial_question }) => {
-        if (initial_question === 'View all departments') {
-            // displayDepartments();
-            console.log('View all departments');
+    ];
+
+
+const addDepartmentQuestion = [
+            {
+                type: 'input',
+                name: 'newDepartmentName',
+                message: 'What department would you like to add?',
+                validate: newDepartmentNameInput => {
+                    if(newDepartmentNameInput) {
+                        return true;
+                    } else {
+                        console.log("Please enter a department name.");
+                        return false;
+                    }
+                }
+            }
+        ];
+
+const addRoleQuestions = [
+    {
+        type: 'input',
+        name: 'newRoleName',
+        message: 'What role would you like to add?',
+        validate: newRoleNameInput => {
+            if (newRoleNameInput) {
+                return true;
+            } else {
+                console.log('Please add a new role.');
+                return false;
+            }
         }
-        else if (initial_question === 'View all roles') {
-            //displayRoles();
-            console.log('View all roles');
+    },
+    {
+        type: 'input',
+        name: 'newRoleSalary',
+        message: `What is the salary for this postion?`,
+        validate: newRoleSalary => {
+            if(newRoleSalary) {
+                return true;
+            } else {
+                console.log('Please enter a salary.');
+                return false;
+            }
         }
-        else if (initial_question === 'View all employees') {
-            //displayEmployees();
-            console.log('View all employees');
+    },
+    // need to add question that pulls existing array of roles as choices
+    {
+        type: 'list',
+        name: 'newRoleDepartment',
+        message: `What department does this position belong to?`,
+        choices: function () {
+            connection.connect(err => {
+                if(err) throw err;
+                // console.log('connected as id ' + connection.threadId + '\n');
+            //    showDepartmentNames();
+            
+           connection.query(`SELECT department_name FROM departments`, function (err, res) {
+if (err) throw err;
+// console.log(res);
+        let departmentArray = [];
+            for (i=0; i < res.length; i++) {
+                departmentArray.push(res[i].department_name)
+            }
+            return departmentArray;
+            // console.log(departmentArray);
+            });
+        });
         }
-        else if (initial_question === 'Add a department') {
-            console.log('Add a department');
+        
+    }
+];
+
+
+const addEmployeeQuestions = [
+    {
+        type: 'input',
+        name: 'newEmployeeFirstName',
+        message: "What is the new employee's first name?",
+        validate: newEmployeeFirstName => {
+            if (newEmployeeFirstName) {
+                return true;
+            } else {
+                console.log("Please enter the new employee's first name.");
+                return false;
+            }
         }
-        else if (initial_question === 'Add a role') {
-            console.log('Add a role');
+    },
+    {
+        type: 'input',
+        name: 'newEmployeeLastName',
+        message: `What is the new employee's last name?`,
+        validate: newEmployeeLastName => {
+            if (newEmployeeLastName) {
+                return true;
+            } else {
+                console.log("Please enter the new employee's last name.");
+                return false;
+            }
         }
-        else if (initial_question === 'Add an employee') {
-            console.log('Add an employee');
-        }
-        else if (initial_question === "Update an employee's role") {
-            console.log('Updated employee');
-        }
-    });
+    // },
+    //need questions that include existing arrays as choices
+    // {
+    //     type: 'list',
+    //     name: 'newEmployeeRole',
+    //     message: `Please select the new employee's role.`,
+    //     choices: displayRoles()
+    // },
+    // {
+    //     type: 'list',
+    //     name: 'newEmployeeManager',
+    //     message: `Please select the new employee's manager.`,
+    //     choices: displayEmployeeNames()
+    }
+];
+
+module.exports = { initialQuestion, addDepartmentQuestion, addRoleQuestions, addEmployeeQuestions };
+
+
+
